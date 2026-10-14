@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>משחק האותיות</title>
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:'Varela Round',Arial,sans-serif;background:linear-gradient(160deg,#ffecd2,#fcb69f 40%,#a1c4fd);min-height:100vh;color:#333;user-select:none}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:8px}
+h1{margin:0;font-size:clamp(20px,5vw,34px);color:#6a1b9a;text-shadow:2px 2px #fff}
+.stars{background:#fff;border-radius:30px;padding:6px 14px;font-size:clamp(16px,4vw,24px);box-shadow:0 3px 0 #0002}
+button{font-family:inherit;border:none;cursor:pointer;touch-action:manipulation}
+.home{background:#fff;border-radius:50%;width:48px;height:48px;font-size:24px;box-shadow:0 3px 0 #0002}
+main{max-width:1000px;margin:0 auto;padding:10px 14px 30px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px}
+.menu button{border-radius:24px;padding:24px 10px;font-size:clamp(20px,4.5vw,28px);color:#fff;box-shadow:0 6px 0 #0003;transition:transform .15s}
+.menu button:active,.big:active,.opt:active{transform:scale(.95)}
+.menu span{display:block;font-size:52px}
+.c1{background:#ff7043}.c2{background:#42a5f5}.c3{background:#66bb6a}.c4{background:#ab47bc}
+.card{background:#fff;border-radius:28px;padding:18px;text-align:center;box-shadow:0 6px 0 #0002;margin-bottom:16px}
+.biglet{font-size:clamp(110px,30vw,200px);line-height:1.1;color:#e91e63;cursor:pointer;animation:pop .4s}
+.emoji{font-size:clamp(60px,16vw,110px)}
+.word{font-size:clamp(28px,7vw,44px);color:#1565c0}
+.name{font-size:clamp(22px,5vw,32px);color:#555}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.big{background:#ffca28;border-radius:20px;padding:14px 22px;font-size:clamp(18px,4.5vw,24px);box-shadow:0 4px 0 #0003;min-height:56px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:560px;margin:0 auto}
+.opt{background:#fff;border-radius:24px;font-size:clamp(60px,16vw,100px);aspect-ratio:1.4;box-shadow:0 6px 0 #0002;color:#5e35b1;font-family:inherit}
+.opt.ok{background:#a5d6a7;animation:pop .4s}.opt.bad{background:#ef9a9a;animation:shake .4s}
+.msg{font-size:clamp(22px,5vw,30px);min-height:44px;text-align:center;color:#2e7d32;font-weight:bold}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin-top:10px}
+.grid button{background:#fff;border-radius:14px;font-size:34px;padding:6px 0;color:#5e35b1;font-family:inherit}
+.grid small{display:block;font-size:12px;color:#f9a825}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:600px;margin:0 auto}
+.mc{aspect-ratio:1;border-radius:18px;background:#7e57c2;font-size:clamp(34px,10vw,64px);color:#fff;box-shadow:0 4px 0 #0003;font-family:inherit}
+.mc.up{background:#fff;color:#e91e63}.mc.done{background:#c8e6c9;color:#2e7d32}
+@media (orientation:landscape) and (max-height:500px){.biglet{font-size:90px}.emoji{font-size:56px}.opt{aspect-ratio:2.2;font-size:56px}.mem{max-width:420px}}
+@keyframes pop{0%{transform:scale(.5)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.conf{position:fixed;top:-20px;width:12px;height:12px;pointer-events:none;animation:fall linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style></head><body>
+<header><button class="home" onclick="menu()" aria-label="בית">🏠</button><h1>🌈 משחק האותיות</h1><div class="stars">⭐ <b id="tot">0</b></div></header>
+<main id="app"></main>
+<script>
+const L=[["א","אָלֶף","אריה","🦁"],["ב","בֵּית","בננה","🍌"],["ג","גִּימֶל","גמל","🐪"],["ד","דָּלֶת","דג","🐟"],["ה","הֵא","הר","⛰️"],["ו","וָו","ורד","🌹"],["ז","זַיִן","זברה","🦓"],["ח","חֵית","חתול","🐱"],["ט","טֵית","טלפון","📱"],["י","יוּד","יד","✋"],["כ","כַּף","כלב","🐶"],["ל","לָמֶד","לימון","🍋"],["מ","מֵם","מטוס","✈️"],["נ","נוּן","נחש","🐍"],["ס","סָמֶך","סוס","🐴"],["ע","עַיִן","עוגה","🎂"],["פ","פֵּא","פיל","🐘"],["צ","צָדִי","צב","🐢"],["ק","קוֹף","קוף","🐒"],["ר","רֵישׁ","רכבת","🚂"],["ש","שִׁין","שמש","☀️"],["ת","תָּו","תפוח","🍎"]];
+const PR=["כל הכבוד! 🎉","מצוין! 🌟","אלוף! 🏆","יופי! 👏","נהדר! 💪"],TRY=["נסה שוב 🙂","כמעט! עוד פעם 💡"];
+let S=JSON.parse(localStorage.getItem("hbStars")||"{}");const app=document.getElementById("app");
+const rnd=a=>a[Math.floor(Math.random()*a.length)],shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+function save(){localStorage.setItem("hbStars",JSON.stringify(S));document.getElementById("tot").textContent=Object.values(S).reduce((a,b)=>a+b,0)}
+function star(l){S[l]=Math.min((S[l]||0)+1,99);save()}
+function say(t){try{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="he-IL";u.rate=.8;const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith("he"));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+function confetti(){const c=["#f44336","#ffeb3b","#4caf50","#2196f3","#e91e63","#ff9800"];for(let i=0;i<40;i++){const d=document.createElement("div");d.className="conf";d.style.left=Math.random()*100+"vw";d.style.background=rnd(c);d.style.animationDuration=1+Math.random()*1.5+"s";d.style.borderRadius=Math.random()<.5?"50%":"2px";document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}}
+function menu(){app.innerHTML=`<div class="menu"><button class="c1" onclick="learn(0)"><span>📖</span>לומדים אותיות</button><button class="c2" onclick="quiz()"><span>🔍</span>מצא את האות</button><button class="c3" onclick="first()"><span>🖼️</span>באיזו אות מתחילה המילה?</button><button class="c4" onclick="memory()"><span>🃏</span>משחק זיכרון</button></div>`}
+function learn(i){const[l,n,w,e]=L[i];app.innerHTML=`<div class="card"><div class="biglet" onclick="say('${n}')">${l}</div><div class="name">${n}</div><div class="emoji">${e}</div><div class="word">${w}</div><div class="row" style="margin-top:12px"><button class="big" onclick="learn(${(i+21)%22})">➡️ הקודמת</button><button class="big" onclick="say('${n}. ${w}')">🔊 שמע</button><button class="big" onclick="learn(${(i+1)%22})">הבאה ⬅️</button></div></div><div class="grid">${L.map((x,j)=>`<button onclick="learn(${j})">${x[0]}<small>${"⭐".repeat(Math.min(S[x[0]]||0,3))||"&nbsp;"}</small></button>`).join("")}</div>`;say(n)}
+function opts(ans,show,onok){const o=shuf([ans,...shuf(L.filter(x=>x!==ans)).slice(0,3)]);let miss=0;return{html:`<div class="opts">${o.map((x,k)=>`<button class="opt" data-k="${k}">${show(x)}</button>`).join("")}</div><div class="msg" id="msg"></div>`,bind(){document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const x=o[b.dataset.k],m=document.getElementById("msg");if(x===ans){b.classList.add("ok");if(!miss)star(ans[0]);m.textContent=rnd(PR);say(m.textContent.replace(/[^\u0590-\u05FF ]/g,""));confetti();setTimeout(onok,1400)}else{miss++;b.classList.add("bad");m.textContent=rnd(TRY);setTimeout(()=>b.classList.remove("bad"),400)}})}}}
+function quiz(){const a=rnd(L),q=opts(a,x=>x[0],quiz);app.innerHTML=`<div class="card"><div class="name">איפה האות</div><div class="word" style="font-size:clamp(36px,9vw,56px)">${a[1]}?</div><button class="big" onclick="say('${a[1]}')">🔊 שמע</button></div>`+q.html;q.bind();say("איפה האות "+a[1])}
+function first(){const a=rnd(L),q=opts(a,x=>x[0],first);app.innerHTML=`<div class="card"><div class="emoji">${a[3]}</div><div class="word">${a[2]}</div><div class="name">באיזו אות מתחילה המילה?</div><button class="big" onclick="say('${a[2]}')">🔊 שמע</button></div>`+q.html;q.bind();say(a[2])}
+function memory(){const p=shuf(L).slice(0,6);const c=shuf(p.flatMap(x=>[{id:x[0],t:x[0]},{id:x[0],t:x[3]}]));let open=[],done=0,lock=false;app.innerHTML=`<div class="card"><div class="name">מצא זוגות: אות ⟷ תמונה</div></div><div class="mem">${c.map((x,k)=>`<button class="mc" data-k="${k}">❓</button>`).join("")}</div><div class="msg" id="msg"></div>`;
+document.querySelectorAll(".mc").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(lock||b.classList.contains("up")||b.classList.contains("done"))return;b.classList.add("up");b.textContent=c[k].t;open.push(b);if(open.length==2){const[x,y]=open.map(e=>c[+e.dataset.k]);if(x.id==y.id&&x.t!=y.t){open.forEach(e=>e.classList.add("done"));star(x.id);open=[];done++;say(L.find(l=>l[0]==x.id)[2]);if(done==6){document.getElementById("msg").innerHTML=`${rnd(PR)} <button class="big" onclick="memory()">שוב 🔄</button>`;confetti()}}else{lock=true;setTimeout(()=>{open.forEach(e=>{e.classList.remove("up");e.textContent="❓"});open=[];lock=false},900)}}})}
+save();menu();
+</script></body></html>
